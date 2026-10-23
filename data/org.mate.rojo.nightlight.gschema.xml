@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <enum id="org.mate.rojo.nightlight.Mode">
+    <value nick="automatic" value="0"/>
+    <value nick="schedule" value="1"/>
+    <value nick="always" value="2"/>
+  </enum>
+
+  <enum id="org.mate.rojo.nightlight.LocationSource">
+    <value nick="auto" value="0"/>
+    <value nick="clock" value="1"/>
+    <value nick="geoclue" value="2"/>
+    <value nick="timezone" value="3"/>
+    <value nick="manual" value="4"/>
+  </enum>
+
+  <schema id="org.mate.rojo.nightlight" path="/org/mate/rojo/nightlight/">
+    <key name="enabled" type="b">
+      <default>false</default>
+      <summary>Enable Night Light</summary>
+      <description>Make the screen warmer at night.</description>
+    </key>
+    <key name="mode" enum="org.mate.rojo.nightlight.Mode">
+      <default>'automatic'</default>
+      <summary>When Night Light is on</summary>
+      <description>"automatic" follows sunset and sunrise at the current location, "schedule" uses schedule-from and schedule-to, and "always" keeps the night temperature all the time. Without a location, "automatic" falls back to the schedule.</description>
+    </key>
+    <key name="night-temperature" type="u">
+      <range min="1000" max="10000"/>
+      <default>4000</default>
+      <summary>Night color temperature</summary>
+      <description>Color temperature of the screen at night, in Kelvin. 6500 is neutral.</description>
+    </key>
+    <key name="day-temperature" type="u">
+      <range min="1000" max="10000"/>
+      <default>6500</default>
+      <summary>Day color temperature</summary>
+      <description>Color temperature of the screen during the day, in Kelvin. At 6500 (neutral) the screen is left alone during the day.</description>
+    </key>
+    <key name="schedule-from" type="d">
+      <range min="0" max="23.999"/>
+      <default>20.0</default>
+      <summary>Night start</summary>
+      <description>Hour of the day (for example 20.5 for 20:30) when the change to the night temperature starts in "schedule" mode.</description>
+    </key>
+    <key name="schedule-to" type="d">
+      <range min="0" max="23.999"/>
+      <default>6.0</default>
+      <summary>Day start</summary>
+      <description>Hour of the day when the change back to the day temperature starts in "schedule" mode.</description>
+    </key>
+    <key name="transition-duration" type="u">
+      <range min="1" max="240"/>
+      <default>30</default>
+      <summary>Transition length</summary>
+      <description>Minutes the change between day and night takes in "schedule" mode. In "automatic" mode the change follows twilight: it lasts from sunset to the end of civil dusk, and from civil dawn to sunrise.</description>
+    </key>
+    <key name="smooth-transitions" type="b">
+      <default>true</default>
+      <summary>Animate changes</summary>
+      <description>Fade to a new temperature over a couple of seconds when Night Light is turned on or off or its settings change, instead of switching at once.</description>
+    </key>
+    <key name="preserve-calibration" type="b">
+      <default>true</default>
+      <summary>Keep monitor calibration</summary>
+      <description>On X11, apply Night Light on top of the gamma ramps the outputs already have (calibration loaded by colord, xcalib or dispwin) instead of replacing them.</description>
+    </key>
+    <key name="location-source" enum="org.mate.rojo.nightlight.LocationSource">
+      <default>'auto'</default>
+      <summary>Where to get the location from</summary>
+      <description>"clock" uses the home location of the MATE clock applet, "geoclue" asks GeoClue, "timezone" uses the coordinates of the system timezone, and "manual" uses manual-latitude and manual-longitude. "auto" tries the clock applet, then GeoClue, then the timezone.</description>
+    </key>
+    <key name="manual-latitude" type="d">
+      <range min="-90" max="90"/>
+      <default>0.0</default>
+      <summary>Latitude</summary>
+      <description>Latitude in degrees, north positive, used when location-source is "manual".</description>
+    </key>
+    <key name="manual-longitude" type="d">
+      <range min="-180" max="180"/>
+      <default>0.0</default>
+      <summary>Longitude</summary>
+      <description>Longitude in degrees, east positive, used when location-source is "manual".</description>
+    </key>
+    <key name="last-coordinates" type="(dd)">
+      <default>(91.0, 181.0)</default>
+      <summary>Last known location</summary>
+      <description>Latitude and longitude last found by an automatic source; used until a source answers. (91, 181) means none.</description>
+    </key>
+  </schema>
+</schemalist>

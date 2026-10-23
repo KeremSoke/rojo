@@ -1,0 +1,6 @@
+option('x11', type: 'feature', value: 'auto', description: 'X11 (RandR) gamma backend')
+option('wayland', type: 'feature', value: 'auto', description: 'Wayland (wlr-gamma-control) backend')
+option('geoclue_conf', type: 'boolean', value: true,
+  description: 'Install a GeoClue configuration snippet allowing the daemon to ask for the location')
+option('autostart', type: 'boolean', value: true,
+  description: 'Install an XDG autostart entry for MATE sessions')

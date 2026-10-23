@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=MATE Night Light
+Comment=Makes the screen warmer at night
+Exec=@libexecdir@/rojo
+OnlyShowIn=MATE;
+NoDisplay=true
+X-MATE-Autostart-Phase=Applications

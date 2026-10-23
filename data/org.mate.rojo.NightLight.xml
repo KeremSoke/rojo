@@ -1,0 +1,103 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!--
+  org.mate.rojo.NightLight, exported by rojo at /org/mate/rojo
+  on the session bus. Settings are in GSettings (org.mate.rojo.nightlight); this
+  interface carries state and the actions that aren't settings. All properties
+  emit org.freedesktop.DBus.Properties.PropertiesChanged.
+
+  Modelled on org.kde.KWin.NightLight, plus GNOME's sunrise/sunset.
+-->
+<node>
+  <interface name="org.mate.rojo.NightLight">
+    <!-- Keep the screen at neutral until Uninhibit(). The inhibitor is
+         released if the caller disconnects from the bus. -->
+    <method name="Inhibit">
+      <arg name="reason" type="s" direction="in"/>
+      <arg name="cookie" type="u" direction="out"/>
+    </method>
+    <method name="Uninhibit">
+      <arg name="cookie" type="u" direction="in"/>
+    </method>
+    <!-- Suspend Night Light, or resume it if Toggle() suspended it. -->
+    <method name="Toggle"/>
+
+    <!-- Show a temperature (1000-10000 K) for 15 s or until StopPreview(),
+         even when Night Light is off or inhibited. Call it again to move or
+         extend the preview. -->
+    <method name="Preview">
+      <arg name="temperature" type="u" direction="in"/>
+    </method>
+    <method name="StopPreview"/>
+
+    <!-- Overrides. Each replaces any other override. Times are Unix
+         timestamps; 0 means "until the next morning" (the end of the next
+         night). Overrides persist across restarts. -->
+    <method name="ActivateUntil">
+      <arg name="until" type="t" direction="in"/>
+    </method>
+    <method name="ActivateManual">
+      <arg name="on" type="b" direction="in"/>
+    </method>
+    <method name="DeactivateUntil">
+      <arg name="until" type="t" direction="in"/>
+    </method>
+    <method name="DeactivateManual">
+      <arg name="off" type="b" direction="in"/>
+    </method>
+    <method name="ClearOverride"/>
+
+    <!-- Send the gamma ramps again. -->
+    <method name="Reapply"/>
+
+    <!-- A gamma backend works in this session. -->
+    <property name="Available" type="b" access="read"/>
+    <!-- "x11", "wayland" or "none". -->
+    <property name="Backend" type="s" access="read"/>
+    <!-- "ok"; "busy" when the compositor refused an output (another program
+         holds its gamma, or it can't adjust gamma; Wayland only); otherwise
+         why the backend is unavailable. -->
+    <property name="BackendStatus" type="s" access="read"/>
+
+    <!-- The "enabled" and "mode" settings. -->
+    <property name="Enabled" type="b" access="read"/>
+    <property name="Mode" type="s" access="read"/>
+    <!-- Night Light is in charge: enabled or activated by an override, and
+         not inhibited. -->
+    <property name="Running" type="b" access="read"/>
+    <!-- It is day time (or Night Light is off or deactivated). -->
+    <property name="Daylight" type="b" access="read"/>
+    <property name="Inhibited" type="b" access="read"/>
+    <!-- Reasons given by the current inhibitors. -->
+    <property name="Inhibitors" type="as" access="read"/>
+    <property name="Previewing" type="b" access="read"/>
+
+    <!-- On screen now, and where it is heading. -->
+    <property name="CurrentTemperature" type="u" access="read"/>
+    <property name="TargetTemperature" type="u" access="read"/>
+
+    <!-- The location in use: 91 and 181 when unknown. -->
+    <property name="Latitude" type="d" access="read"/>
+    <property name="Longitude" type="d" access="read"/>
+    <!-- "manual", "clock", "geoclue", "timezone", "cache" or "none". -->
+    <property name="LocationSource" type="s" access="read"/>
+    <!-- A city or timezone name, when the source has one. -->
+    <property name="LocationName" type="s" access="read"/>
+    <!-- Today's sunrise and sunset as local fractional hours, or -1 when
+         not following the sun. -->
+    <property name="Sunrise" type="d" access="read"/>
+    <property name="Sunset" type="d" access="read"/>
+
+    <!-- The transition last started and the next one (Unix time, seconds).
+         0 when not following a schedule. -->
+    <property name="PreviousTransitionDateTime" type="t" access="read"/>
+    <property name="PreviousTransitionDuration" type="u" access="read"/>
+    <property name="ScheduledTransitionDateTime" type="t" access="read"/>
+    <property name="ScheduledTransitionDuration" type="u" access="read"/>
+
+    <property name="ActivatedUntil" type="t" access="read"/>
+    <property name="ActivatedManual" type="b" access="read"/>
+    <property name="DeactivatedUntil" type="t" access="read"/>
+    <property name="DeactivatedManual" type="b" access="read"/>
+  </interface>
+</node>
