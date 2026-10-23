@@ -146,11 +146,10 @@ public class Schedule : Object {
     }
 
     private DateTime at_hour (DateTime day, double hour) {
-        int h = (int) Math.floor (hour);
-        int m = (int) Math.floor ((hour - h) * 60);
-        double s = (hour - h) * 3600 - m * 60;
+        // Whole seconds first: 6.0833… h is 06:05, not 06:04:59.99.
+        int total = ((int) Math.round (hour * 3600)).clamp (0, 24 * 3600 - 1);
         return new DateTime (tz, day.get_year (), day.get_month (), day.get_day_of_month (),
-                             h.clamp (0, 23), m.clamp (0, 59), s.clamp (0, 59.999));
+                             total / 3600, total / 60 % 60, total % 60);
     }
 
     private int64 utc_hours (DateTime day, double hours) {
